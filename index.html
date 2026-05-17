@@ -111,7 +111,11 @@ html, body {
   display:flex; flex-direction:column; align-items:center;
   -webkit-overflow-scrolling:touch;
 }
-.main-area > :first-child { margin-top: 0; }
+.main-area > :first-child { margin-top: auto; }
+.main-area > :last-child { margin-bottom: auto; }
+
+/* content wrap */
+.content-wrap { width:100%; display:flex; flex-direction:column; align-items:center; }
 
 /* ===== Progress ===== */
 .progress-wrap { width:100%; max-width:400px; margin-bottom:12px; }
@@ -348,18 +352,20 @@ html, body {
     <span class="header-title">繁簡字卡</span>
   </div>
 
-  <div class="mode-switch" id="modeSwitch">
-    <button class="mode-btn active" data-mode="choice" onclick="switchMode('choice')">选择模式</button>
-    <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
-  </div>
+  <div class="main-area" id="mainArea">
+    <div class="mode-switch" id="modeSwitch">
+      <button class="mode-btn active" data-mode="choice" onclick="switchMode('choice')">选择模式</button>
+      <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
+    </div>
 
-  <div class="install-banner" id="installBanner">
-    <span class="install-banner-text">添加到桌面，随时练习</span>
-    <button class="install-banner-btn" id="installBtn">安装</button>
-    <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
-  </div>
+    <div class="install-banner" id="installBanner">
+      <span class="install-banner-text">添加到桌面，随时练习</span>
+      <button class="install-banner-btn" id="installBtn">安装</button>
+      <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
+    </div>
 
-  <div class="main-area" id="mainArea"></div>
+    <div class="content-wrap" id="contentWrap"></div>
+  </div>
 
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="learn" onclick="switchTab('learn')">
@@ -535,7 +541,7 @@ function prepareRound() {
 //  RENDER
 // ============================================================
 function renderQuiz() {
-  var area = document.getElementById('mainArea');
+  var area = document.getElementById('contentWrap');
   if (state.tab === 'stats') { renderStats(); return; }
   if (state.mode === 'translate' && state.tab === 'learn') {
     if (state.transQuestions.length === 0) { area.innerHTML = buildEmptyState(); return; }
@@ -689,7 +695,7 @@ function escHTML(s) {
 }
 
 function renderStats() {
-  var area = document.getElementById('mainArea');
+  var area = document.getElementById('contentWrap');
   var stats = getStats();
   var totalAtt = 0, totalCor = 0, totalWro = 0, mastered = 0;
   for (var i = 0; i < ALL_PAIRS.length; i++) {
