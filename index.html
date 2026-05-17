@@ -382,7 +382,7 @@ html, body {
     </button>
   </div>
 
-  <div class="version-footer">v5.2.0</div>
+  <div class="version-footer">v5.2.1</div>
 </div>
 
 <button class="debug-trigger" id="debugTrigger" title="debug">*</button>
@@ -880,10 +880,11 @@ function setupPWA() {
   };
   var blob = new Blob([JSON.stringify(mf)],{type:'application/json'});
   document.getElementById('manifest-link').href = URL.createObjectURL(blob);
-  var sw='var C="fj-v52";self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(caches.open(C).then(function(c){return c.addAll(["./"])}))});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C}).map(function(k){return caches.delete(k)}))}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+  var sw='var C="fj-v53";self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(caches.open(C).then(function(c){return c.addAll(["./"])}))});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C}).map(function(k){return caches.delete(k)}))}))});self.addEventListener("fetch",function(e){e.respondWith(fetch(e.request).then(function(r){var r2=r.clone();caches.open(C).then(function(c){c.put(e.request,r2)});return r}).catch(function(){return caches.match(e.request)}))});';
   try {
     var swBlob = new Blob([sw],{type:'application/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(swBlob),{scope:'./'}).catch(function(){});
+    var p = navigator.serviceWorker.register(URL.createObjectURL(swBlob),{scope:'./'}).catch(function(){});
+    if (p && p.then) { p.then(function(reg) { reg.addEventListener('updatefound', function() { var w = reg.installing; if (w) { w.addEventListener('statechange', function() { if (w.state === 'activated' && navigator.serviceWorker.controller) { location.reload(); } }); } }); }); }
   } catch(e) {}
 }
 
