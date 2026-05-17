@@ -88,7 +88,7 @@ html, body {
 .mode-switch {
   display:flex; justify-content:center; gap:12px;
   padding:4px 20px 0; flex-shrink:0;
-  margin: 5vh 0 3vh;
+  margin: 5vh 0;
 }
 .mode-btn {
   padding:9px 26px; border-radius:22px;
@@ -114,7 +114,7 @@ html, body {
 }
 
 /* content wrap */
-.content-wrap { width:100%; display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+.content-wrap { width:100%; display:flex; flex-direction:column; align-items:center; flex-shrink:0; margin-bottom:auto; }
 
 /* ===== Progress ===== */
 .progress-wrap { width:100%; max-width:400px; margin-bottom:12px; }
@@ -361,7 +361,6 @@ html, body {
       <button class="install-banner-btn" id="installBtn">安装</button>
       <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
     </div>
-    <div style="flex:1;min-height:0"></div>
     <div class="content-wrap" id="contentWrap"></div>
     <div style="flex:1;min-height:0"></div>
   </div>
