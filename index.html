@@ -85,7 +85,6 @@ html, body {
 }
 
 /* ===== Mode Switch ===== */
-.switch-spacer { flex:1; min-height:0; flex-shrink:1; }
 .mode-switch {
   display:flex; justify-content:center; gap:12px;
   padding:4px 20px 0; flex-shrink:0;
@@ -112,11 +111,9 @@ html, body {
   display:flex; flex-direction:column; align-items:center;
   -webkit-overflow-scrolling:touch;
 }
-.main-area > :first-child { margin-top: auto; }
-.main-area > :last-child { margin-bottom: auto; }
 
 /* content wrap */
-.content-wrap { width:100%; display:flex; flex-direction:column; align-items:center; }
+.content-wrap { width:100%; display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
 
 /* ===== Progress ===== */
 .progress-wrap { width:100%; max-width:400px; margin-bottom:12px; }
@@ -353,20 +350,20 @@ html, body {
     <span class="header-title">繁簡字卡</span>
   </div>
 
-  <div class="switch-spacer"></div>
-  <div class="mode-switch" id="modeSwitch">
-    <button class="mode-btn active" data-mode="choice" onclick="switchMode('choice')">选择模式</button>
-    <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
-  </div>
-  <div class="install-banner" id="installBanner">
-    <span class="install-banner-text">添加到桌面，随时练习</span>
-    <button class="install-banner-btn" id="installBtn">安装</button>
-    <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
-  </div>
-  <div class="switch-spacer"></div>
-
   <div class="main-area" id="mainArea">
+    <div style="flex:1"></div>
+    <div class="mode-switch" id="modeSwitch">
+      <button class="mode-btn active" data-mode="choice" onclick="switchMode('choice')">选择模式</button>
+      <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
+    </div>
+    <div class="install-banner" id="installBanner">
+      <span class="install-banner-text">添加到桌面，随时练习</span>
+      <button class="install-banner-btn" id="installBtn">安装</button>
+      <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
+    </div>
+    <div style="flex:1"></div>
     <div class="content-wrap" id="contentWrap"></div>
+    <div style="flex:2"></div>
   </div>
 
   <div class="tab-bar">
