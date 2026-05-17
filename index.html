@@ -87,7 +87,7 @@ html, body {
 /* ===== Mode Switch ===== */
 .mode-switch {
   display:flex; justify-content:center; gap:12px;
-  padding:4px 20px 16px; flex-shrink:0;
+  padding:4px 20px 0; flex-shrink:0;
 }
 .mode-btn {
   padding:9px 26px; border-radius:22px;
@@ -111,8 +111,7 @@ html, body {
   display:flex; flex-direction:column; align-items:center;
   -webkit-overflow-scrolling:touch;
 }
-.main-area > :first-child { margin-top: auto; }
-.main-area > :last-child { margin-bottom: auto; }
+.main-area > :first-child { margin-top: 0; }
 
 /* ===== Progress ===== */
 .progress-wrap { width:100%; max-width:400px; margin-bottom:12px; }
@@ -284,6 +283,26 @@ html, body {
 .tab-btn[data-tab="review"].active { color:var(--dot-blue); }
 .tab-btn[data-tab="stats"].active { color:var(--yellow); }
 
+/* ===== Install Banner ===== */
+.install-banner {
+  width:100%; max-width:400px; display:none;
+  background:var(--pink-light); border:1.5px solid var(--pink);
+  border-radius:var(--radius-sm); padding:12px 16px;
+  margin-bottom:10px; align-items:center; gap:10px;
+}
+.install-banner.show { display:flex; }
+.install-banner-text { flex:1; font-size:0.82rem; color:var(--pink); font-weight:500; }
+.install-banner-btn {
+  padding:7px 16px; border-radius:16px; font-size:0.78rem; font-weight:600;
+  background:var(--pink); color:#fff; border:none; cursor:pointer;
+  white-space:nowrap; letter-spacing:0.04em;
+}
+.install-banner-btn:active { transform:scale(0.95); opacity:0.9; }
+.install-banner-close {
+  background:none; border:none; font-size:1rem; color:var(--pink);
+  cursor:pointer; padding:2px 4px; line-height:1;
+}
+
 /* ===== Version Footer ===== */
 .version-footer { text-align:center; padding:4px 0; flex-shrink:0; font-size:0.6rem; color:var(--border); letter-spacing:0.04em; }
 
@@ -334,6 +353,12 @@ html, body {
     <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
   </div>
 
+  <div class="install-banner" id="installBanner">
+    <span class="install-banner-text">添加到桌面，随时练习</span>
+    <button class="install-banner-btn" id="installBtn">安装</button>
+    <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
+  </div>
+
   <div class="main-area" id="mainArea"></div>
 
   <div class="tab-bar">
@@ -351,7 +376,7 @@ html, body {
     </button>
   </div>
 
-  <div class="version-footer">v5.1.0</div>
+  <div class="version-footer">v5.2.0</div>
 </div>
 
 <button class="debug-trigger" id="debugTrigger" title="debug">*</button>
@@ -390,7 +415,7 @@ const INPUT_BORDER_COLORS = ['#f0b8b8', '#f2c885', '#8cc9a8', '#b0cde8', '#d0b8e
 // ============================================================
 //  PERSISTENCE
 // ============================================================
-const LS_KEY = 'fan-jian-v5.1';
+const LS_KEY = 'fan-jian-v5.2';
 
 function loadData() {
   try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
@@ -849,11 +874,44 @@ function setupPWA() {
   };
   var blob = new Blob([JSON.stringify(mf)],{type:'application/json'});
   document.getElementById('manifest-link').href = URL.createObjectURL(blob);
-  var sw='var C="fj-v51";self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(caches.open(C).then(function(c){return c.addAll(["./"])}))});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C}).map(function(k){return caches.delete(k)}))}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+  var sw='var C="fj-v52";self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(caches.open(C).then(function(c){return c.addAll(["./"])}))});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C}).map(function(k){return caches.delete(k)}))}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
   try {
     var swBlob = new Blob([sw],{type:'application/javascript'});
     navigator.serviceWorker.register(URL.createObjectURL(swBlob),{scope:'./'}).catch(function(){});
   } catch(e) {}
+}
+
+var deferredInstall = null;
+var installDismissed = false;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredInstall = e;
+  if (!installDismissed && !window.matchMedia('(display-mode: standalone)').matches) {
+    document.getElementById('installBanner').classList.add('show');
+  }
+});
+
+window.addEventListener('appinstalled', function() {
+  deferredInstall = null;
+  document.getElementById('installBanner').classList.remove('show');
+  console.log('PWA installed');
+});
+
+document.getElementById('installBtn').addEventListener('click', function() {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(function(r) {
+    if (r.outcome === 'accepted') {
+      document.getElementById('installBanner').classList.remove('show');
+    }
+    deferredInstall = null;
+  });
+});
+
+function dismissInstall() {
+  installDismissed = true;
+  document.getElementById('installBanner').classList.remove('show');
 }
 
 // ============================================================
