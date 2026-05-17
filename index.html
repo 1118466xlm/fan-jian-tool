@@ -88,6 +88,7 @@ html, body {
 .mode-switch {
   display:flex; justify-content:center; gap:12px;
   padding:4px 20px 0; flex-shrink:0;
+  margin: 5vh 0 3vh;
 }
 .mode-btn {
   padding:9px 26px; border-radius:22px;
@@ -351,7 +352,6 @@ html, body {
   </div>
 
   <div class="main-area" id="mainArea">
-    <div style="flex:1"></div>
     <div class="mode-switch" id="modeSwitch">
       <button class="mode-btn active" data-mode="choice" onclick="switchMode('choice')">选择模式</button>
       <button class="mode-btn" data-mode="translate" onclick="switchMode('translate')">翻译模式</button>
@@ -361,9 +361,9 @@ html, body {
       <button class="install-banner-btn" id="installBtn">安装</button>
       <button class="install-banner-close" onclick="dismissInstall()">&times;</button>
     </div>
-    <div style="flex:1"></div>
+    <div style="flex:1;min-height:0"></div>
     <div class="content-wrap" id="contentWrap"></div>
-    <div style="flex:2"></div>
+    <div style="flex:1;min-height:0"></div>
   </div>
 
   <div class="tab-bar">
